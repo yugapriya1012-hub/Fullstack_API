@@ -10,7 +10,7 @@ from schema.order import OrderCreate, OrderOut, OrderItemOut, OrderUpdate
 
 router = APIRouter(prefix="/orders", tags=["Orders"])
 
-# 1. CREATE ORDER
+
 @router.post("/", response_model=OrderOut)
 def create_order(data: OrderCreate, db: Session = Depends(get_db)):
     customer = db.query(Customer).filter(Customer.id == data.customer_id).first()
@@ -55,7 +55,6 @@ def create_order(data: OrderCreate, db: Session = Depends(get_db)):
         items=items_out
     )
 
-# 2. CUSTOMER ORDERS (Used by My Orders Page)
 @router.get("/customer/{customer_id}", response_model=List[OrderOut])
 def get_customer_orders(customer_id: int, db: Session = Depends(get_db)):
     orders = db.query(Order).filter(Order.customer_id == customer_id).order_by(Order.created_at.desc()).all()
@@ -77,15 +76,12 @@ def get_customer_orders(customer_id: int, db: Session = Depends(get_db)):
         ))
     return result
 
-# 3. SELLER ORDERS (Used by Order Management Page)
 @router.get("/seller/{seller_id}", response_model=List[OrderOut])
 def get_seller_orders(seller_id: int, db: Session = Depends(get_db)):
-    # Join queries to filter orders belonging to a specific seller
     orders = db.query(Order).join(OrderItem).join(Product).filter(Product.seller_id == seller_id).distinct().all()
     
     result = []
     for order in orders:
-        # Filter only the items that belong to THIS seller
         seller_items = [
             OrderItemOut(
                 product_id=i.product_id,
@@ -101,7 +97,6 @@ def get_seller_orders(seller_id: int, db: Session = Depends(get_db)):
         ))
     return result
 
-# 4. UPDATE ORDER STATUS
 @router.put("/{order_id}", response_model=OrderOut)
 def update_order_status(order_id: int, data: OrderUpdate, db: Session = Depends(get_db)):
     order = db.query(Order).filter(Order.id == order_id).first()
@@ -124,7 +119,6 @@ def update_order_status(order_id: int, data: OrderUpdate, db: Session = Depends(
         delivery_date=order.delivery_date, items=items_out
     )
 
-# 5. GET CUSTOMER BY EMAIL
 @router.get("/by-email")
 def get_customer_by_email(email: str, db: Session = Depends(get_db)):
     customer = db.query(Customer).filter(Customer.email == email).first()

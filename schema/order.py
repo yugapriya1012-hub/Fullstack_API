@@ -50,14 +50,6 @@ class OrderCreate(BaseModel):
     items: List[OrderItemCreate]
     delivery_date: Optional[date] = None 
 
-# class OrderOut(BaseModel):
-#     id: int
-#     customer_id: int
-#     total_amount: float
-#     status: str
-#     created_at: datetime
-#     delivery_date: Optional[date] = None 
-#     items: List[OrderItemOut]
 
 class OrderOut(BaseModel):
     id: int

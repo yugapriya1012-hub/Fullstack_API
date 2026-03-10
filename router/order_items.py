@@ -48,20 +48,6 @@ def get_order_items(db: Session = Depends(get_db)):
         ))
     return result
 
-
-# @router.get("/{item_id}", response_model=OrderItemOut)
-# def get_order_item(item_id: int, db: Session = Depends(get_db)):
-#     item = db.query(OrderItem).filter(OrderItem.id == item_id).first()
-#     if not item:
-#         raise HTTPException(status_code=404, detail="Order item not found")
-#     return OrderItemOut(
-#         id=item.id,
-#         order_id=item.order_id,
-#         product_id=item.product_id,
-#         quantity=item.quantity,
-#         price=item.price,
-#         product_name=item.product.product_name
-#     )
 @router.get("/by-order/{order_id}", response_model=list[OrderItemOut])
 def get_items_by_order(order_id: int, db: Session = Depends(get_db)):
     items = db.query(OrderItem).filter(OrderItem.order_id == order_id).all()

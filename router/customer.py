@@ -56,7 +56,6 @@ def get_customer_by_email(email: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Customer not found")
     return customer
 
-# ✅ Get all customers
 @router.get("/", response_model=list[CustomerOut])
 def get_all_customers(db: Session = Depends(get_db)):
     return db.query(Customer).all()

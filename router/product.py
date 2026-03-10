@@ -152,7 +152,7 @@ def delete_product(
     if not product:
         raise HTTPException(status_code=404, detail="Product not found or not authorized")
 
-    # 🔹 Delete image from folder
+   
     image_path = f"{UPLOAD_DIR}/{product.image}"
     if os.path.exists(image_path):
         os.remove(image_path)
