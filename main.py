@@ -3,14 +3,16 @@ from router import customer,seller,product,order,order_items,cart,discount,payme
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from db.database import Base,engine
+import os
 
 app = FastAPI(title="E-Commerce API")
 
-@app.on_event("startup")
-def startup():
-    Base.metadata.create_all(bind=engine)
+# create tables
+Base.metadata.create_all(bind=engine)
 
-app.mount("/images", StaticFiles(directory="images/products"), name="images")
+# static images
+if os.path.exists("images/products"):
+    app.mount("/images", StaticFiles(directory="images/products"), name="images")
 
 app.add_middleware(
     CORSMiddleware,
