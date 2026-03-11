@@ -7,7 +7,7 @@ load_dotenv()
 
 
 # create engine
-engine = create_engine(os.getenv("DB_URL"))
+engine = create_engine(os.getenv("DB_URL"), pool_pre_ping=True)
 
 # create session
 SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
