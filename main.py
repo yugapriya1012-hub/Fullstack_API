@@ -4,13 +4,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from db.database import Base,engine
 
-
-
-Base.metadata.create_all(bind=engine)
-
 app = FastAPI(title="E-Commerce API")
 
-app.mount("/images",StaticFiles(directory="images"),name="images")
+@app.on_event("startup")
+def startup():
+    Base.metadata.create_all(bind=engine)
+
+app.mount("/images", StaticFiles(directory="images/products"), name="images")
 
 app.add_middleware(
     CORSMiddleware,
@@ -19,6 +19,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 app.include_router(customer.router)
 app.include_router(seller.router)
 app.include_router(product.router)
@@ -29,11 +30,6 @@ app.include_router(payment.router)
 app.include_router(discount.router)
 app.include_router(review.router)
 
-
-
-
-# # Root endpoint
 @app.get("/")
 def root():
     return {"message": "Welcome to the E-Commerce API"}
-
