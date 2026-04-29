@@ -17,4 +17,4 @@ class Product(Base):
     image = Column(String, nullable=False)   # stores filename or path
 
     seller = relationship("Seller", back_populates="products")
-    reviews = relationship("Review", back_populates="product")
+    # reviews = relationship("Review", back_populates="product")

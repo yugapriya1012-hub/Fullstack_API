@@ -11,4 +11,4 @@ class Customer(Base):
     password = Column(String, nullable=False)
     phone = Column(String, nullable=False)
     
-    reviews = relationship("Review", back_populates="customer")
+    # reviews = relationship("Review", back_populates="customer")

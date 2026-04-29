@@ -11,8 +11,8 @@ class Review(Base):
     comment = Column(String)
     created_at = Column(DateTime, default=datetime.utcnow)
 
-    customer_id = Column(Integer, ForeignKey("customers.id"))
-    product_id = Column(Integer, ForeignKey("products.id"))
+    # customer_id = Column(Integer, ForeignKey("customers.id"))
+    # product_id = Column(Integer, ForeignKey("products.id"))
 
-    customer = relationship("Customer", back_populates="reviews")
-    product = relationship("Product", back_populates="reviews")
+    # customer = relationship("Customer", back_populates="reviews")
+    # product = relationship("Product", back_populates="reviews")

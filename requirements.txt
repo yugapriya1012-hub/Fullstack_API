@@ -19,3 +19,4 @@ typing_extensions==4.15.0
 uvicorn==0.38.0
 passlib[bcrypt]
 python-multipart
+
