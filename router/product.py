@@ -1,5 +1,5 @@
 import os
-import shutil
+import base64
 from fastapi import APIRouter, Depends, UploadFile, File, Form, status,HTTPException
 from sqlalchemy.orm import Session
 from typing import List
@@ -14,8 +14,8 @@ router = APIRouter(
     tags=["Products"]
 )
 
-UPLOAD_DIR = "images/products"
-os.makedirs(UPLOAD_DIR, exist_ok=True)
+# UPLOAD_DIR = "images/products"
+# os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 @router.post("/", response_model=ProductResponse, status_code=status.HTTP_201_CREATED)
 def create_product(
@@ -37,12 +37,11 @@ def create_product(
             detail="Seller not found. Please check the name."
         )
 
-   
-    file_path = f"{UPLOAD_DIR}/{image.filename}"
-    with open(file_path, "wb") as buffer:
-        shutil.copyfileobj(image.file, buffer)
+    image_bytes = image.file.read()
+    content_type = image.content_type or "image/jpeg"
+    base64_encoded = base64.b64encode(image_bytes).decode("utf-8")
+    base64_string = f"data:{content_type};base64,{base64_encoded}"
 
-  
     new_product = Product(
         seller_id=seller.id, 
         product_name=product_name,
@@ -50,7 +49,7 @@ def create_product(
         price=price,
         places=places,
         discount=discount,
-        image=image.filename
+        image=base64_string
     )
 
     db.add(new_product)
@@ -113,15 +112,10 @@ def update_product(
         raise HTTPException(status_code=404, detail="Product not found or not authorized")
 
     if image:
-        old_image_path = f"{UPLOAD_DIR}/{product.image}"
-        if os.path.exists(old_image_path):
-            os.remove(old_image_path)
-
-        new_image_path = f"{UPLOAD_DIR}/{image.filename}"
-        with open(new_image_path, "wb") as buffer:
-            shutil.copyfileobj(image.file, buffer)
-
-        product.image = image.filename
+        image_bytes = image.file.read()
+        content_type = image.content_type or "image/jpeg"
+        base64_encoded = base64.b64encode(image_bytes).decode("utf-8")
+        product.image = f"data:{content_type};base64,{base64_encoded}"
 
    
     product.product_name = product_name
@@ -152,11 +146,7 @@ def delete_product(
     if not product:
         raise HTTPException(status_code=404, detail="Product not found or not authorized")
 
-   
-    image_path = f"{UPLOAD_DIR}/{product.image}"
-    if os.path.exists(image_path):
-        os.remove(image_path)
-
+    # Skip file deletion since images are stored in DB or elsewhere
     db.delete(product)
     db.commit()
 
