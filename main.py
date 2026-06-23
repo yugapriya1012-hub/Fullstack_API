@@ -62,7 +62,7 @@ if os.path.exists("images"):
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://yugapriya1012-hub.github.io", "http://localhost", "http://127.0.0.1:5500"],  
+    allow_origins=["https://yugapriya1012-hub.github.io", "http://localhost", "http://127.0.0.1:5500", "https://fullstackfrontend-ekib2tsul-yugapriya1012-hubs-projects.vercel.app"],  
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
