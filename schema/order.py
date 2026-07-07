@@ -54,6 +54,7 @@ class OrderCreate(BaseModel):
 class OrderOut(BaseModel):
     id: int
     customer_id: int
+    customer_name: Optional[str] = None
     total_amount: float
     status: str
     created_at: datetime
