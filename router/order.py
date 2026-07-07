@@ -50,7 +50,7 @@ def create_order(data: OrderCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(order)
     return OrderOut(
-        id=order.id, customer_id=order.customer_id, total_amount=order.total_amount,
+        id=order.id, customer_id=order.customer_id, customer_name=customer.name, total_amount=order.total_amount,
         status=order.status, created_at=order.created_at, delivery_date=order.delivery_date,
         items=items_out
     )
@@ -70,7 +70,7 @@ def get_customer_orders(customer_id: int, db: Session = Depends(get_db)):
             ) for item in order.order_items
         ]
         result.append(OrderOut(
-            id=order.id, customer_id=order.customer_id, total_amount=order.total_amount,
+            id=order.id, customer_id=order.customer_id, customer_name=order.customer.name, total_amount=order.total_amount,
             status=order.status, created_at=order.created_at, delivery_date=order.delivery_date,
             items=items_list
         ))
@@ -91,7 +91,7 @@ def get_seller_orders(seller_id: int, db: Session = Depends(get_db)):
             ) for i in order.order_items if i.product.seller_id == seller_id
         ]
         result.append(OrderOut(
-            id=order.id, customer_id=order.customer_id, total_amount=order.total_amount,
+            id=order.id, customer_id=order.customer_id, customer_name=order.customer.name, total_amount=order.total_amount,
             status=order.status, created_at=order.created_at, delivery_date=order.delivery_date,
             items=seller_items
         ))
@@ -114,7 +114,7 @@ def update_order_status(order_id: int, data: OrderUpdate, db: Session = Depends(
         ) for i in order.order_items
     ]
     return OrderOut(
-        id=order.id, customer_id=order.customer_id, total_amount=order.total_amount, 
+        id=order.id, customer_id=order.customer_id, customer_name=order.customer.name, total_amount=order.total_amount, 
         status=order.status, created_at=order.created_at, 
         delivery_date=order.delivery_date, items=items_out
     )
